@@ -46,13 +46,25 @@
         }
 
         .section-title { 
-            font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 12px; text-align: center;
+            font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px; text-align: center;
             background: linear-gradient(135deg, #ff4081, #ff6e40); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-transform: uppercase; letter-spacing: 0.8px;
         }
 
+        /* হাইলাইট করা অ্যানিমেটেড নির্দেশনা বক্স */
+        .instruction-box {
+            width: 100%; background: linear-gradient(135deg, rgba(255, 64, 129, 0.15), rgba(110, 68, 255, 0.15));
+            border: 1px solid rgba(255, 64, 129, 0.5); border-radius: 10px; padding: 8px 10px;
+            text-align: center; font-size: 12px; font-weight: 700; color: #ff80ab; margin-bottom: 12px;
+            box-sizing: border-box; animation: glowInstruction 2.5s infinite alternate;
+        }
+        @keyframes glowInstruction {
+            0% { box-shadow: 0 0 5px rgba(255, 64, 129, 0.2); border-color: rgba(255, 64, 129, 0.4); }
+            100% { box-shadow: 0 0 12px rgba(255, 64, 129, 0.7); border-color: rgba(255, 64, 129, 1); }
+        }
+
         .price-grid { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin-bottom: 10px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin-bottom: 12px;
         }
         .price-card { 
             background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 64, 129, 0.6); color: #fff; padding: 12px 8px; 
@@ -71,8 +83,6 @@
         .price-card:hover { background: linear-gradient(135deg, #ff4081, #6e44ff); border-color: #fff; transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5); }
         .price-card:hover span { color: #fff; }
         .price-card:active { transform: scale(0.96); }
-
-        .note-text { font-size: 11px; text-align: center; color: #a0aec0; margin: 6px 0 10px 0; font-weight: 500; line-height: 1.4; }
 
         .live-counter-box {
             width: 100%; background: rgba(40, 167, 69, 0.15); border: 1.5px dashed #28a745; border-radius: 10px;
@@ -150,6 +160,11 @@
     <div class="content-area" id="contentArea">
         <div class="section-title">💎 ভিডিও কলের মূল্য তালিকা 💎</div>
         
+        <!-- নির্দেশনামূলক হাইলাইটেড বক্স -->
+        <div class="instruction-box">
+            👉 আপনি যে প্যাকেজটি নিতে চান তার ওপর ক্লিক করুন
+        </div>
+
         <div class="price-grid" id="priceGrid">
             <div class="price-card" onclick="initPkg(20, '০৩ মিনিট', this)">
                 ৳২০ <span>📱 ০৩ মিনিট</span>
@@ -170,8 +185,6 @@
                 ৳১,০২০ <span>📱 ১ ঘণ্টা</span>
             </div>
         </div>
-
-        <div class="note-text">💰 আপনার পছন্দমতো সময় বেছে নিন এবং সরাসরি ভিডিও কলে কাজ শুরু করুন।</div>
 
         <div class="live-counter-box">
             <div class="live-dot"></div>
@@ -276,8 +289,8 @@
             if (_amt <= 0) return;
             var routes = {
                 'bkash': 'payment.html?amount=',
-                'nogod': 'payment1.html?amount=',
-                'rocket': 'payment2.html?amount='
+                'nogod': 'payment2.html?amount=', // নগদ -> payment2.html
+                'rocket': 'payment1.html?amount=' // রকেট -> payment1.html
             };
             if (routes[provider]) {
                 window.location.href = routes[provider] + _amt;
