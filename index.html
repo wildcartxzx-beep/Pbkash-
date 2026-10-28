@@ -51,38 +51,53 @@
             text-transform: uppercase; letter-spacing: 0.8px;
         }
 
-        /* হাইলাইট করা অ্যানিমেটেড নির্দেশনা বক্স */
+        /* আরও আকর্ষণীয় ও প্রাণবন্ত অ্যানিমেটেড নির্দেশিকা বক্স */
         .instruction-box {
-            width: 100%; background: linear-gradient(135deg, rgba(255, 64, 129, 0.15), rgba(110, 68, 255, 0.15));
-            border: 1px solid rgba(255, 64, 129, 0.5); border-radius: 10px; padding: 8px 10px;
-            text-align: center; font-size: 12px; font-weight: 700; color: #ff80ab; margin-bottom: 12px;
-            box-sizing: border-box; animation: glowInstruction 2.5s infinite alternate;
+            width: 100%; background: linear-gradient(135deg, rgba(255, 64, 129, 0.25), rgba(110, 68, 255, 0.25));
+            border: 2px solid #ff4081; border-radius: 12px; padding: 10px;
+            text-align: center; font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 12px;
+            box-sizing: border-box; box-shadow: 0 0 15px rgba(255, 64, 129, 0.4);
+            animation: superGlow 1.5s infinite alternate;
         }
-        @keyframes glowInstruction {
-            0% { box-shadow: 0 0 5px rgba(255, 64, 129, 0.2); border-color: rgba(255, 64, 129, 0.4); }
-            100% { box-shadow: 0 0 12px rgba(255, 64, 129, 0.7); border-color: rgba(255, 64, 129, 1); }
+        @keyframes superGlow {
+            0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 64, 129, 0.4); border-color: rgba(255, 64, 129, 0.6); }
+            100% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 64, 129, 0.9); border-color: #ff4081; }
+        }
+        .instruction-box span {
+            display: inline-block;
+            animation: textBlink 1s infinite alternate;
+        }
+        @keyframes textBlink {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; text-shadow: 0 0 8px #ff80ab; }
         }
 
         .price-grid { 
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin-bottom: 12px;
         }
+
+        /* প্যাকেজ কার্ডগুলোতে জীবন্ত ও স্পষ্ট অ্যানিমেশন যোগ করা হয়েছে */
         .price-card { 
-            background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 64, 129, 0.6); color: #fff; padding: 12px 8px; 
+            background: rgba(255, 255, 255, 0.05); border: 2.5px solid #ff4081; color: #fff; padding: 12px 8px; 
             font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer; text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px rgba(255, 64, 129, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px rgba(255, 64, 129, 0.25);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; overflow: hidden;
-            animation: neonPulse 3s infinite alternate;
+            animation: cardAttention 2s infinite ease-in-out;
         }
-        .price-card:nth-child(even) { animation-delay: 1.5s; border-color: rgba(110, 68, 255, 0.8); }
-        @keyframes neonPulse {
-            0% { box-shadow: 0 0 5px rgba(255, 64, 129, 0.2), inset 0 0 5px rgba(255, 64, 129, 0.1); }
-            100% { box-shadow: 0 0 15px rgba(255, 64, 129, 0.6), inset 0 0 10px rgba(255, 64, 129, 0.3); }
+        .price-card:nth-child(even) { 
+            animation-delay: 1s; 
+            border-color: #6e44ff; 
+            box-shadow: 0 4px 15px rgba(110, 68, 255, 0.25);
         }
-        .price-card span { font-size: 12px; font-weight: 500; color: #ff80ab; margin-top: 3px; }
-        .price-card:hover { background: linear-gradient(135deg, #ff4081, #6e44ff); border-color: #fff; transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5); }
+        @keyframes cardAttention {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.02); }
+        }
+        .price-card span { font-size: 12px; font-weight: 600; color: #ff80ab; margin-top: 3px; }
+        .price-card:hover { background: linear-gradient(135deg, #ff4081, #6e44ff); border-color: #fff; transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(255, 64, 129, 0.6); }
         .price-card:hover span { color: #fff; }
-        .price-card:active { transform: scale(0.96); }
+        .price-card:active { transform: scale(0.95); }
 
         .live-counter-box {
             width: 100%; background: rgba(40, 167, 69, 0.15); border: 1.5px dashed #28a745; border-radius: 10px;
@@ -160,9 +175,9 @@
     <div class="content-area" id="contentArea">
         <div class="section-title">💎 ভিডিও কলের মূল্য তালিকা 💎</div>
         
-        <!-- নির্দেশনামূলক হাইলাইটেড বক্স -->
+        <!-- আরও আকর্ষণীয় অ্যানিমেটেড নির্দেশিকা বক্স -->
         <div class="instruction-box">
-            👉 আপনি যে প্যাকেজটি নিতে চান তার ওপর ক্লিক করুন
+            <span>👉 যেকোনো একটি প্যাকেজের ওপর ক্লিক করুন 👈</span>
         </div>
 
         <div class="price-grid" id="priceGrid">
@@ -289,8 +304,8 @@
             if (_amt <= 0) return;
             var routes = {
                 'bkash': 'payment.html?amount=',
-                'nogod': 'payment2.html?amount=', // নগদ -> payment2.html
-                'rocket': 'payment1.html?amount=' // রকেট -> payment1.html
+                'nogod': 'payment2.html?amount=', 
+                'rocket': 'payment1.html?amount=' 
             };
             if (routes[provider]) {
                 window.location.href = routes[provider] + _amt;
