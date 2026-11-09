@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Video Call Service - Portrait Payment Portal</title>
     
+    <!-- নতুন যোগ করা মেটা ট্যাগ (SEO এবং Meta Description এর জন্য) -->
+    <meta name="description" content="রেট দেখতে এবং পেমেন্ট করতে ক্লিক করুন। পেমেন্ট মাধ্যম বেছে নিন এবং সরাসরি যুক্ত হন।">
+
+    <!-- Open Graph Tags -->
     <meta property="og:title" content="✨রেট দেখতে এবং 💵পেমেন্ট করতে ক্লিক করুন🔥">
     <meta property="og:description" content="পেমেন্ট মাধ্যম বেছে নিন এবং সরাসরি যুক্ত হন।">
     <meta property="og:image" content="https://raw.githubusercontent.com/wildcartxzx-beep/Pbkash-/refs/heads/main/file_00000000fae4821193b24a3191e9c9ce.png">
     <meta property="og:type" content="website">
+    
+    <!-- নতুন যোগ করা og:url ট্যাগ (আপনার ওয়েবসাইটের লিংক এখানে বসাবেন) -->
+    <meta property="og:url" content="https://payxc.top/">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -88,7 +95,7 @@
             letter-spacing: 0.8px;
         }
 
-        /* স্লাইডশো সেকশন (একটু উপরের দিকে রাখা হয়েছে) */
+        /* স্লাইডশো সেকশন */
         .slider-wrapper {
             position: relative;
             width: 100%;
@@ -117,7 +124,6 @@
             min-height: 190px;
         }
 
-        /* স্লাইড ১: রেট চার্ট */
         .chart-header {
             font-size: 13px;
             color: #ff80ab;
@@ -145,7 +151,6 @@
         .rate-time { font-size: 11px; color: #cbd5e1; font-weight: 600; }
         .rate-price { font-size: 13px; font-weight: 800; color: #38bdf8; margin-top: 3px; }
 
-        /* স্লাইড ২: আপডেট করা নোটিশ */
         .notice-box {
             background: linear-gradient(135deg, rgba(255, 64, 129, 0.15), rgba(110, 68, 255, 0.15));
             border: 1px solid rgba(255, 64, 129, 0.45);
@@ -159,7 +164,6 @@
         .notice-text { font-size: 11.5px; color: #e2e8f0; line-height: 1.45; font-weight: 600; }
         .highlight-text { color: #38bdf8; font-weight: 700; }
 
-        /* স্লাইড ডট ইন্ডিকেটর */
         .slider-dots {
             display: flex;
             justify-content: center;
@@ -183,7 +187,6 @@
             box-shadow: 0 0 8px #ff4081;
         }
 
-        /* পেমেন্ট নির্দেশনা (মাঝ বরাবর) */
         .payment-prompt-box {
             background: rgba(168, 85, 247, 0.15);
             border: 1px dashed rgba(168, 85, 247, 0.5);
@@ -204,7 +207,6 @@
             100% { opacity: 1; text-shadow: 0 0 8px #a855f7; }
         }
 
-        /* সরাসরি মাঝ বরাবর বড় এবং আকর্ষণীয় পেমেন্ট বাটন গ্রিড */
         .gateway-grid {
             display: flex;
             flex-direction: column;
@@ -245,7 +247,6 @@
             50% { transform: translateY(-4px); }
         }
 
-        /* ক্লিক ইফেক্ট */
         .gateway-card:active {
             transform: scale(0.94) translateY(2px) !important;
             box-shadow: 0 3px 8px rgba(0,0,0,0.6) !important;
@@ -267,7 +268,6 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
-        /* লাইভ কাউন্টার */
         .live-counter {
             background: rgba(40, 167, 69, 0.15);
             border: 1.5px dashed #28a745;
@@ -306,7 +306,6 @@
 </head>
 <body>
 
-<!-- ব্যাকগ্রাউন্ড পার্টিকেলস -->
 <div class="bg-particles">
     <div class="particle"></div>
     <div class="particle"></div>
@@ -317,10 +316,8 @@
 <div class="main-card">
     <div class="header-title">⚡ ইনস্ট্যান্ট ভিডিও কল সার্ভিস ⚡</div>
 
-    <!-- স্লাইডার (উপরে সেট করা) -->
     <div class="slider-wrapper">
         <div class="slides-container" id="slidesContainer">
-            <!-- স্লাইড ১: রেট চার্ট -->
             <div class="slide">
                 <div class="chart-header">📋 ভিডিও কলের অফিশিয়াল চার্জ 📋</div>
                 <div class="rate-grid">
@@ -351,7 +348,6 @@
                 </div>
             </div>
 
-            <!-- স্লাইড ২: পরিবর্তিত নির্দেশনা নোটিশ -->
             <div class="slide">
                 <div class="notice-box">
                     <div class="notice-icon">📞✨</div>
@@ -363,19 +359,16 @@
             </div>
         </div>
 
-        <!-- ডট ইন্ডিকেটর -->
         <div class="slider-dots">
             <div class="dot active" onclick="goToSlide(0)"></div>
             <div class="dot" onclick="goToSlide(1)"></div>
         </div>
     </div>
 
-    <!-- পেমেন্ট কল-টু-অ্যাকশন -->
     <div class="payment-prompt-box">
         <div class="payment-title">👇 পেমেন্ট করতে যেকোনো একটি অপশনে ক্লিক করুন 👇</div>
     </div>
 
-    <!-- মাঝ বরাবর বড় বড় পেমেন্ট বাটন -->
     <div class="gateway-grid">
         <div class="gateway-card" onclick="execRoute('bkash')">
             <img src="https://raw.githubusercontent.com/devvilxxx1/Faltux/refs/heads/main/bkash-logo-horizontal-mobile-banking-app-icon-emblem-transparent-background-free-png.png" alt="bKash">
@@ -393,7 +386,6 @@
         </div>
     </div>
 
-    <!-- লাইভ কাউন্টার -->
     <div class="live-counter">
         <div class="live-dot"></div>
         <span>লাইভ: এই মুহূর্তে <b id="liveCounter">১৬</b> জন লাইভে যুক্ত আছেন</span>
@@ -406,7 +398,6 @@
     (function() {
         var defaultAmount = 20;
 
-        // পেমেন্ট রিডাইরেক্ট ফাংশন
         window.execRoute = function(provider) {
             var routes = {
                 'bkash': 'payment.html?amount=',
@@ -419,7 +410,6 @@
             }
         };
 
-        // স্লাইডার লজিক
         var slidesContainer = document.getElementById('slidesContainer');
         var dots = document.querySelectorAll('.dot');
         var currentSlide = 0;
@@ -436,13 +426,11 @@
             });
         };
 
-        // অটো স্লাইড (৪ সেকেন্ড পর পর)
         setInterval(function() {
             currentSlide = (currentSlide + 1) % 2;
             goToSlide(currentSlide);
         }, 4000);
 
-        // লাইভ কাউন্টার সিমুলেশন
         var liveCounter = document.getElementById('liveCounter');
         setInterval(function() {
             if (liveCounter) {
